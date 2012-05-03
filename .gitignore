@@ -1,0 +1,4 @@
+*.swp
+*~
+butter
+node_modules
