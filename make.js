@@ -3,6 +3,7 @@
 var BUTTER_DIR = 'butter',
     EXTERNAL_DIR = 'external',
     EXTERNAL_BUTTER_DIR = EXTERNAL_DIR + '/butter',
+    EXTERNAL_CORNFIELD_DIR = EXTERNAL_BUTTER_DIR + '/cornfield'
     PACKAGE_NAME = 'butter';
 
 require('shelljs/make');
@@ -10,6 +11,12 @@ require('shelljs/make');
 target.all = function() {
   target.submodules();
   target.build();
+};
+
+target.server = function() {
+  target.submodules();
+  echo('### Starting cornfield server...');
+  exec('node ' + EXTERNAL_CORNFIELD_DIR + '/app.js');
 };
 
 target.submodules = function() {
