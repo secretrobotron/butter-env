@@ -19,6 +19,11 @@ target.server = function() {
   exec('node ' + EXTERNAL_CORNFIELD_DIR + '/app.js');
 };
 
+target.keener = function() {
+  exec('cd ' + EXTERNAL_BUTTER_DIR + ' && git pull git://github.com/mozilla/butter.git master');
+  target.submodules();
+};
+
 target.submodules = function() {
   echo('### Updating git submodules');
   mkdir('-p', EXTERNAL_DIR);
