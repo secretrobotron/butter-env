@@ -4,7 +4,8 @@ var PUBLIC_DIR = 'public',
     BUTTER_DIR = PUBLIC_DIR + '/butter',
     EXTERNAL_DIR = 'external',
     EXTERNAL_BUTTER_DIR = EXTERNAL_DIR + '/butter',
-    EXTERNAL_CORNFIELD_DIR = EXTERNAL_BUTTER_DIR + '/cornfield';
+    EXTERNAL_CORNFIELD_DIR = EXTERNAL_BUTTER_DIR + '/cornfield',
+    EXTERNAL_POPCORN_DIR = EXTERNAL_BUTTER_DIR + '/external/popcorn-js';
 
 require('shelljs/make');
 
@@ -39,6 +40,9 @@ target.build = function() {
   mkdir('-p', BUTTER_DIR);
   echo('### Copying files')
   cp('-r', EXTERNAL_BUTTER_DIR + '/dist/*', BUTTER_DIR + '/');
+  mkdir('-p', BUTTER_DIR + '/css');
+  mv(BUTTER_DIR + '/*.css', BUTTER_DIR + '/css');
+  cp('-r', EXTERNAL_POPCORN_DIR, PUBLIC_DIR);
 };
 
 target.clean = function() {

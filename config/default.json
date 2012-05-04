@@ -12,8 +12,8 @@
   "dirs": {
     "wwwRoot": "./public",
     "templates": "./public",
-    "publish": "view",
-    "publishPrefix": "http://localhost:8888/cornfield/view"
+    "publish": "./public/view",
+    "publishPrefix": "http://localhost:8888/view"
   },
   "environment": {
     "mode": "production",
