@@ -10,18 +10,15 @@
     "secret": "thisisareallyreallylongsecrettoencryptcookies"
   },
   "dirs": {
-    "wwwRoot": "../",
-    "templates": "../templates",
+    "wwwRoot": "./public",
+    "templates": "./public",
     "publish": "view",
     "publishPrefix": "http://localhost:8888/cornfield/view"
   },
   "environment": {
-    "mode": "development",
+    "mode": "production",
     "defaultUser": ""
   },
   "templates": {
-    "default-butter-test": {
-      "../external/popcorn-js/": "http://localhost:8888/external/popcorn-js/"
-    }
   }
 }
