@@ -7,45 +7,66 @@ var PUBLIC_DIR = 'public',
     EXTERNAL_CORNFIELD_DIR = EXTERNAL_BUTTER_DIR + '/cornfield',
     EXTERNAL_POPCORN_DIR = EXTERNAL_BUTTER_DIR + '/external/popcorn-js';
 
-require('shelljs/make');
+var safeExec = require('child_process').exec;
 
-target.all = function() {
-  target.submodules();
-  target.build();
-};
+try{
+  require('shelljs/make');
+}
+catch(e){
+  console.log('### "shelljs" node module missing. Setting up node environment first.');
+  safeExec('npm install', function(err, s, feedback){
+    console.log("### Environment setup. Resuming.");
+    require('shelljs/make');
+    run();
+  });
+  return;
+}
 
-target.server = function() {
-  target.submodules();
-  echo('### Starting cornfield server');
-  mkdir('-p', PUBLIC_DIR);
-  exec('node ' + EXTERNAL_CORNFIELD_DIR + '/app.js');
-};
+function run(){
+  target.all = function() {
+    target.submodules();
+    target.build();
+  };
 
-target.keener = function() {
-  echo('### Fetching and updating latest submodules')
-  exec('cd ' + EXTERNAL_BUTTER_DIR + ' && git pull git://github.com/mozilla/butter.git master && git submodule update --init --recursive');
-};
+  target.server = function() {
+    target.submodules();
+    echo('### Starting cornfield server');
+    mkdir('-p', PUBLIC_DIR);
+    exec('node ' + EXTERNAL_CORNFIELD_DIR + '/app.js');
+  };
 
-target.submodules = function() {
-  echo('### Updating git submodules');
-  mkdir('-p', EXTERNAL_DIR);
-  exec('git submodule update --init --recursive');
-};
+  target.keener = function() {
+    echo('### Fetching and updating latest submodules')
+    exec('cd ' + EXTERNAL_BUTTER_DIR + ' && git pull git://github.com/mozilla/butter.git master && git submodule update --init --recursive');
+  };
 
-target.build = function() {
-  echo('### Building environment');
-  mkdir('-p', PUBLIC_DIR);
-  exec('cd ' + EXTERNAL_BUTTER_DIR + ' && npm install');
-  exec('cd ' + EXTERNAL_BUTTER_DIR + ' && node make package');
-  mkdir('-p', BUTTER_DIR);
-  echo('### Copying files')
-  cp('-r', EXTERNAL_BUTTER_DIR + '/dist/*', BUTTER_DIR + '/');
-  mkdir('-p', BUTTER_DIR + '/css');
-  mv(BUTTER_DIR + '/*.css', BUTTER_DIR + '/css');
-  cp('-r', EXTERNAL_POPCORN_DIR, PUBLIC_DIR);
-};
+  target.submodules = function() {
+    echo('### Updating git submodules');
+    mkdir('-p', EXTERNAL_DIR);
+    exec('git submodule update --init --recursive');
+  };
 
-target.clean = function() {
-  echo('### Cleaning environment');
-  rm('-fr', BUTTER_DIR);
-};
+  target.build = function() {
+    echo('### Building environment');
+    mkdir('-p', PUBLIC_DIR);
+    exec('cd ' + EXTERNAL_BUTTER_DIR + ' && npm install');
+    exec('cd ' + EXTERNAL_BUTTER_DIR + ' && node make package');
+    mkdir('-p', BUTTER_DIR);
+    echo('### Copying Butter');
+    cp('-r', EXTERNAL_BUTTER_DIR + '/dist/*', BUTTER_DIR + '/');
+    mkdir('-p', BUTTER_DIR + '/css');
+    echo('### Moving CSS');
+    mv(BUTTER_DIR + '/*.css', BUTTER_DIR + '/css');
+    echo('### Copying Popcorn');
+    mkdir('-p', PUBLIC_DIR + '/popcorn');
+    cp('-r', EXTERNAL_POPCORN_DIR + "/*", PUBLIC_DIR + '/popcorn/');
+  };
+
+  target.clean = function() {
+    echo('### Cleaning environment');
+    rm('-fr', BUTTER_DIR);
+    rm('-fr', EXTERNAL_POPCORN_DIR);
+  };
+}
+
+run();
